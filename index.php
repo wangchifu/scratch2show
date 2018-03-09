@@ -161,7 +161,7 @@ if($_SESSION['login'] == "OK") {
                         <div class=\"card-body\">
                         ";
                         foreach($files as $k=>$v){
-                            echo "<a href=\"show.php?folder={$_GET['folder']}&file={$v}\" class=\"btn btn-info\">{$v}</a>";
+                            echo "<a href=\"show.php?folder={$_GET['folder']}&file={$v}\" class=\"btn btn-info\">{$v}</a> ";
                         }
                         echo "
                         </div>
