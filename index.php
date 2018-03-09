@@ -14,6 +14,16 @@ if($_SESSION['login'] == "OK") {
             mkdir('./upload/'.$set_folder . $_POST['folder_name']);
         }
     }
+
+    if($_POST['add_file']=="go"){
+        $num =  count($_FILES["files"]["name"]);
+        for ( $i=0 ; $i<$num ; $i++ ) {
+            $ext = end(explode(".", $_FILES["files"]["name"][$i]));
+            if($ext == "sb2") {
+                move_uploaded_file($_FILES["files"]["tmp_name"][$i], "./upload/" . $_POST['folder'] . "/" . $_FILES["files"]["name"][$i]);
+            }
+        }
+    }
 }
 ?>
 <head>
@@ -97,10 +107,10 @@ if($_SESSION['login'] == "OK") {
                         echo "
                         <div class=\"card card-outline-secondary my-4\">
                         <div class=\"card-header\">
-                            新增目錄
+                            新增檔案
                         </div>
                         <div class=\"card-body\">
-                            <form class=\"form-horizontal\" method=\"POST\" id=\"folder\" onsubmit=\"return false;\">
+                            <form class=\"form-horizontal\" method=\"POST\" id=\"folder\" enctype='multipart/form-data' onsubmit=\"return false;\">
                                 <table class=\"table table-light\">
                                     <thead>
                                     <tr>
@@ -125,7 +135,7 @@ if($_SESSION['login'] == "OK") {
                                             </select>
                                         </td>
                                         <td>
-                                            <input type=\"file\" name=\"files\" class=\"form-control\" required>
+                                            <input type=\"file\" name=\"files[]\" class=\"form-control\" required multiple=\"multiple\">
                                         </td>
                                         <td>
                                             <a href=\"#\" class=\"btn btn-success\" onclick=\"bbconfirm('folder','確定要新增？')\">送出</a>
@@ -133,7 +143,8 @@ if($_SESSION['login'] == "OK") {
                                     </tr>
                                     </tbody>
                                 </table>
-                                <input type=\"hidden\" name=\"add_folder\" value=\"go\">
+                                <input type=\"hidden\" name=\"folder\" value=\"{$_GET['folder']}\">
+                                <input type=\"hidden\" name=\"add_file\" value=\"go\">
                             </form>
                         </div>                                               
                     </div>

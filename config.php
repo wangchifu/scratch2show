@@ -19,7 +19,7 @@ function get_menu(){
     $i = 0;
     if ($handle = opendir('./upload')) {
         while (false !== ($file = readdir($handle))) {
-            if ($file != '.' && $file != '..' && substr($file,-4) != '.sb2') {
+            if ($file != '.' && $file != '..' && substr($file,-4) != '.sb2' && substr($file,0,1) !=".") {
                 $menu[$i] = $file;
                 $i++;
             }
