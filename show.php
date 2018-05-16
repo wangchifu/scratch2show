@@ -20,11 +20,7 @@ session_start();
 </nav>
 <div class="container">
     <div class="row">
-        <div class="col-lg-3">
-            <h3 class="my-4">歡迎光臨</h3>
-            <?php include('./layouts/nav.php'); ?>
-        </div>
-        <div class="col-lg-9">
+        <div class="col-lg-12">
             <div class="card mt-4">
                 <div class="card-body">
                     <h1>作品欣賞<a href="#" class="btn btn-secondary" onclick="history.back()">返回</a></h1>
@@ -32,11 +28,22 @@ session_start();
                         $page = $_GET['folder'];
                         $file = urldecode($_GET['file']);
                     ?>
-                    <object id="flashplayer" style="display: inline; visibility: visible; position: relative; z-index: 1000;" type="application/x-shockwave-flash" data="./img/Scratch.swf" height="600" width="747">
+                    <div>
+                    路徑：<a href='index.php'>根目錄</a>
+                    <?php
+                    foreach(explode('/',$_GET['folder']) as $v){
+                    if(!empty($v)) $p .= "/{$v}";
+                    echo "<a href='index.php?folder={$p}'>{$v}</a> / ";
+                    }
+                    ?>
+                    </div>
+                    <div>
+                    <object id="flashplayer" style="display: inline; visibility: visible; position: relative; z-index: 1000;" type="application/x-shockwave-flash" data="./img/Scratch.swf" height="643" width="800">
                         <param name="allowScriptAccess" value="sameDomain">
                         <param name="allowFullScreen" value="true">
-                        <param name="flashvars" value="project=upload/<?php echo $page; ?>/<?php echo $file; ?>&autostart=false">
+                        <param name="flashvars" value="project=upload<?php echo $page; ?>/<?php echo $file; ?>&autostart=false">
                     </object>
+                    </div>
                 </div>
             </div>
         </div>

@@ -6,12 +6,8 @@ session_start();
 if($_SESSION['login'] == "OK") {
     if ($_POST['add_folder'] == "go") {
         if (!empty($_POST['folder_name'])) {
-            if($_POST['set_folder'] != "根目錄"){
-                $set_folder = $_POST['set_folder']."/";
-            }else{
-                $set_folder = "";
-            }
-            mkdir('./upload/'.$set_folder . $_POST['folder_name']);
+
+            mkdir('./upload/'.$_POST['set_folder'] .'/'. $_POST['folder_name']);
         }
     }
 
@@ -20,7 +16,7 @@ if($_SESSION['login'] == "OK") {
         for ( $i=0 ; $i<$num ; $i++ ) {
             $ext = end(explode(".", $_FILES["files"]["name"][$i]));
             if($ext == "sb2") {
-                move_uploaded_file($_FILES["files"]["tmp_name"][$i], "./upload/" . $_POST['folder'] . "/" . $_FILES["files"]["name"][$i]);
+                move_uploaded_file($_FILES["files"]["tmp_name"][$i], "./upload/" . $_POST['set_folder'] . "/" . $_FILES["files"]["name"][$i]);
             }
         }
     }
@@ -54,66 +50,19 @@ if($_SESSION['login'] == "OK") {
                 <div class="card-body">
                     <h1>你好</h1>
                     <?php
-                    if($_SESSION['login'] == "OK" && empty($_GET['folder'])){
-                        $folder = (empty($_GET['folder']))?"根目錄":$_GET['folder'];
-                        echo "
-                        <div class=\"card card-outline-secondary my-4\">
-                        <div class=\"card-header\">
-                            新增目錄
-                        </div>
-                        <div class=\"card-body\">
-                            <form class=\"form-horizontal\" method=\"POST\" id=\"folder\" onsubmit=\"return false;\">
-                                <table class=\"table table-light\">
-                                    <thead>
-                                    <tr>
-                                        <th>
-                                            放置目錄
-                                        </th>
-                                        <th>
-                                            目錄名稱
-                                        </th>
-                                        <th>
-                                            動作
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>                                  
-                                        <td>
-                                            <select name=\"set_folder\" class=\"form-control\">
-                                                <option value=\"$folder\">
-                                                    $folder
-                                                </option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type=\"text\" name=\"folder_name\" class=\"form-control\" required>
-                                        </td>
-                                        <td>
-                                            <a href=\"#\" class=\"btn btn-success\" onclick=\"bbconfirm('folder','確定要新增？')\">送出</a>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <input type=\"hidden\" name=\"add_folder\" value=\"go\">
-                            </form>
-                        </div>                                               
-                    </div>
-                        ";
 
-
-
-                    }
-
-                    if($_SESSION['login'] == "OK" && !empty($_GET['folder'])) {
+                    if($_SESSION['login'] == "OK") {
                         $folder = (empty($_GET['folder'])) ? "根目錄" : $_GET['folder'];
+                        $folder_array = explode('/',$_GET['folder']);
+                        $this_folder = end($folder_array);
+                        if(empty($this_folder)) $this_folder="根目錄";
                         echo "
                         <div class=\"card card-outline-secondary my-4\">
                         <div class=\"card-header\">
-                            新增檔案
+                            管理員新增
                         </div>
                         <div class=\"card-body\">
-                            <form class=\"form-horizontal\" method=\"POST\" id=\"folder\" enctype='multipart/form-data' onsubmit=\"return false;\">
+          
                                 <table class=\"table table-light\">
                                     <thead>
                                     <tr>
@@ -121,7 +70,7 @@ if($_SESSION['login'] == "OK") {
                                             放置目錄
                                         </th>
                                         <th>
-                                            檔案上傳
+                                            目錄 / 檔案
                                         </th>
                                         <th>
                                             動作
@@ -129,26 +78,41 @@ if($_SESSION['login'] == "OK") {
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <form class=\"form-horizontal\" method=\"POST\" id=\"folder\" enctype='multipart/form-data' onsubmit=\"return false;\">
+                                    <tr>
+                                        <td>
+                                        {$this_folder}
+                                        <input type='hidden' name='set_folder' value='{$_GET['folder']}'>
+                                        </td>
+                                        <td>
+                                         <input type='text' name='folder_name' placeholder='目錄名稱' class=\"form-control\">
+                                        </td>
+                                        <td>
+                                         <a href=\"#\" class=\"btn btn-success\" onclick=\"bbconfirm('folder','確定要新增目錄？')\"><i class='fas fa-folder'></i> 新增目錄</a>
+                                        </td>
+                                    </tr>
+                                    <input type=\"hidden\" name=\"add_folder\" value=\"go\">
+                                    </form>
+                                    <form class=\"form-horizontal\" method=\"POST\" id=\"file\" enctype='multipart/form-data' onsubmit=\"return false;\">
                                     <tr>                                  
                                         <td>
-                                            <select name=\"set_folder\" class=\"form-control\">
-                                                <option value=\"$folder\">
-                                                    $folder
-                                                </option>
-                                            </select>
+                                            {$this_folder}
+                                            <input type='hidden' name='set_folder' value='{$_GET['folder']}'>
                                         </td>
                                         <td>
                                             <input type=\"file\" name=\"files[]\" class=\"form-control\" required multiple=\"multiple\">
                                         </td>
                                         <td>
-                                            <a href=\"#\" class=\"btn btn-success\" onclick=\"bbconfirm('folder','確定要新增？')\">送出</a>
+                                            <a href=\"#\" class=\"btn btn-success\" onclick=\"bbconfirm('file','確定要新增檔案？')\"><i class='fas fa-file'></i> 新增檔案</a>
                                         </td>
                                     </tr>
+                                
+                                    <input type=\"hidden\" name=\"add_file\" value=\"go\">
+                                    </form>
                                     </tbody>
                                 </table>
-                                <input type=\"hidden\" name=\"folder\" value=\"{$_GET['folder']}\">
-                                <input type=\"hidden\" name=\"add_file\" value=\"go\">
-                            </form>
+                                
+                            
                         </div>                                               
                     </div>
                     
@@ -165,7 +129,12 @@ if($_SESSION['login'] == "OK") {
                         echo "                     
                         <div class=\"card card-outline-secondary my-4\">
                         <div class=\"card-header\">
-                            路徑：根目錄".$open_folder."
+                            路徑：<a href='index.php'>根目錄</a> ";
+                        foreach(explode('/',$_GET['folder']) as $v){
+                            if(!empty($v)) $p .= "/{$v}";
+                            echo "<a href='index.php?folder={$p}'>{$v}</a> / ";
+                        }
+                        echo "
                         </div>
                         <div class=\"card-body\">
                         ";
@@ -175,7 +144,7 @@ if($_SESSION['login'] == "OK") {
                         }
 
                         foreach($files as $k=>$v){
-                            echo "<a href=\"index.php?folder={$_GET['folder']}&file={$v}\" class='list-group-item'><i class='fas fa-file text-info'></i> {$v}</a>";
+                            echo "<a href=\"show.php?folder={$_GET['folder']}&file={$v}\" class='list-group-item'><i class='fas fa-file text-info'></i> {$v}</a>";
                         }
                         echo "
                         </div>
