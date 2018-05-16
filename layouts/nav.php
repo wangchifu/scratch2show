@@ -12,5 +12,6 @@ foreach($menu as $k => $v){
     echo "
     <a href=\"index.php?folder=$v\" class=\"list-group-item {$active}\">$v</a>";
 }
+
 ?>
 </div>

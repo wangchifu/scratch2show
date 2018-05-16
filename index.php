@@ -31,6 +31,7 @@ if($_SESSION['login'] == "OK") {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link href="./fontawesome/css/fontawesome-all.css" rel="stylesheet">
     <title><?php echo $sitename; ?></title>
     <?php include './layouts/header.php'; ?>
 </head>
@@ -42,11 +43,13 @@ if($_SESSION['login'] == "OK") {
 </nav>
 <div class="container">
     <div class="row">
+        <!--
         <div class="col-lg-3">
             <h3 class="my-4">歡迎光臨</h3>
-            <?php include('./layouts/nav.php'); ?>
+            <?php //include('./layouts/nav.php'); ?>
         </div>
-        <div class="col-lg-9">
+        -->
+        <div class="col-lg-12">
             <div class="card mt-4">
                 <div class="card-body">
                     <h1>你好</h1>
@@ -148,26 +151,37 @@ if($_SESSION['login'] == "OK") {
                             </form>
                         </div>                                               
                     </div>
+                    
                         ";
                     }
 
                     if(!empty($_GET['folder'])){
-                        $files = get_files($_GET['folder']);
+                        $open_folder = $_GET['folder'];
+                    }else{
+                        $open_folder = null;
+                    }
+                        $folders = get_folders($open_folder);
+                        $files = get_files($open_folder);
                         echo "                     
                         <div class=\"card card-outline-secondary my-4\">
                         <div class=\"card-header\">
-                            目錄：".$_GET['folder']."
+                            路徑：根目錄".$open_folder."
                         </div>
                         <div class=\"card-body\">
                         ";
+                        foreach($folders as $k=>$v){
+                            $path = $open_folder.'/'.$v;
+                            echo "<a href=\"index.php?folder={$path}\" class='list-group-item'><i class='fa fa-folder text-warning'></i> {$v}</a>";
+                        }
+
                         foreach($files as $k=>$v){
-                            echo "<a href=\"show.php?folder={$_GET['folder']}&file={$v}\" class=\"btn btn-info\">{$v}</a> ";
+                            echo "<a href=\"index.php?folder={$_GET['folder']}&file={$v}\" class='list-group-item'><i class='fas fa-file text-info'></i> {$v}</a>";
                         }
                         echo "
                         </div>
                         </div>
                         ";
-                    }
+
                     ?>
                 </div>
 

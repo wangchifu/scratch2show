@@ -42,4 +42,18 @@ function get_files($folder){
     }
     return $files;
 }
+
+function get_folders($folder){
+    $i = 0;
+    if ($handle = opendir('./upload/'.$folder)) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file != '.' && $file != '..' && is_dir('./upload/'.$folder.'/'.$file)) {
+                $folders[$i] = $file;
+                $i++;
+            }
+        }
+        closedir($handle);
+    }
+    return $folders;
+}
 ?>
