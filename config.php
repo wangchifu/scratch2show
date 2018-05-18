@@ -56,4 +56,17 @@ function get_folders($folder){
     }
     return $folders;
 }
+
+function get_num($folder){
+    $i = 0;
+    if ($handle = opendir('./upload/'.$folder)) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file != '.' && $file != '..') {
+                $i++;
+            }
+        }
+        closedir($handle);
+    }
+    return $i;
+}
 ?>

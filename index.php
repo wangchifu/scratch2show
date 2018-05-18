@@ -1,13 +1,35 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
 <?php
 include 'config.php';
 session_start();
 if($_SESSION['login'] == "OK") {
+    if($_GET['action']=='del_folder'){
+        $path_array = explode('/',$_GET['folder']);
+        $del_folder = end($path_array);
+        $new_path = "";
+        foreach($path_array as $v){
+            if($v != $del_folder and !empty($v)){
+                $new_path .= "/".$v;
+            }
+        }
+        rmdir('upload/'.$_GET['folder']);
+        echo "<script>document.location.href=\"index.php?folder={$new_path}\";</script>";
+        exit;
+
+    }
+
+    if($_GET['action']=='del_file'){
+        unlink('upload/'.$_GET['folder']."/".$_GET['file']);
+        echo "<script>document.location.href=\"index.php?folder={$_GET['folder']}\";</script>";
+        exit;
+
+    }
+
     if ($_POST['add_folder'] == "go") {
         if (!empty($_POST['folder_name'])) {
-
             mkdir('./upload/'.$_POST['set_folder'] .'/'. $_POST['folder_name']);
+            $new_path = str_replace('#','',$_POST['set_folder']);
+            echo "<script>document.location.href=\"index.php?folder={$new_path}\";</script>";
+
         }
     }
 
@@ -20,8 +42,11 @@ if($_SESSION['login'] == "OK") {
             }
         }
     }
+
 }
 ?>
+<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -126,29 +151,51 @@ if($_SESSION['login'] == "OK") {
                     }
                         $folders = get_folders($open_folder);
                         $files = get_files($open_folder);
-                        echo "                     
-                        <div class=\"card card-outline-secondary my-4\">
-                        <div class=\"card-header\">
-                            路徑：<a href='index.php'>根目錄</a> ";
+
+                        echo "路徑：<a href='index.php'>根目錄</a> ";
+
                         foreach(explode('/',$_GET['folder']) as $v){
                             if(!empty($v)) $p .= "/{$v}";
                             echo "<a href='index.php?folder={$p}'>{$v}</a> / ";
                         }
+
                         echo "
-                        </div>
-                        <div class=\"card-body\">
-                        ";
+                        <table class=\"table table-light\">
+                        <thead>
+                            <tr>
+                                <th>目錄 / 檔案</th>
+                                <th>數量</th>
+                                <th>修改時間</th>
+                             </tr>
+                        </thead>
+                        <tbody>";
+
                         foreach($folders as $k=>$v){
                             $path = $open_folder.'/'.$v;
-                            echo "<a href=\"index.php?folder={$path}\" class='list-group-item'><i class='fa fa-folder text-warning'></i> {$v}</a>";
+                            if($_SESSION['login'] == "OK"){
+                                $num = get_num($open_folder.'/'.$v);
+                                if($num == 0) {
+                                    $del = "<a href='index.php?folder={$path}&action=del_folder' id='del_f{$v}' onclick=\"bbconfirm2('del_f{$v}','確定刪除目錄 {$v} ?')\"><i class='fas fa-minus-square text-danger'></i></a>";
+                                }else{
+                                    $del = "";
+                                }
+                            }
+                            echo "<tr><td><a href=\"index.php?folder={$path}\"><i class='fa fa-folder text-warning'></i> {$v}</a> {$del}</td><td>{$num} 個項目</td><td>-</td></tr>";
+
                         }
 
                         foreach($files as $k=>$v){
-                            echo "<a href=\"show.php?folder={$_GET['folder']}&file={$v}\" class='list-group-item'><i class='fas fa-file text-info'></i> {$v}</a>";
+                            if($_SESSION['login'] == "OK") {
+                                $del = "<a href='index.php?folder={$_GET['folder']}&action=del_file&file={$v}' id='del_f2{$v}' onclick=\"bbconfirm2('del_f2{$v}','確定刪除檔案 {$v} ?')\"><i class='fas fa-minus-square text-danger'></i></a>";
+                            }
+                            $filesize = number_format(filesize('upload'.$_GET['folder'].'/'.$v) / pow(1024, 1), 2, '.', '');
+                            $filetime = date ("Y-m-d H:i:s",filemtime('upload'.$_GET['folder'].'/'.$v));
+                            echo "<tr><td><a href=\"show.php?folder={$_GET['folder']}&file={$v}\"><i class='fas fa-file text-info'></i> {$v}</a> {$del}</td><td>{$filesize} kB</td><td>{$filetime}</td></tr>";
                         }
                         echo "
-                        </div>
-                        </div>
+                        </tbody>
+                        </table>
+                       
                         ";
 
                     ?>
