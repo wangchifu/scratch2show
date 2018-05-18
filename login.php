@@ -32,9 +32,8 @@ if($_REQUEST['send'] == "go"){
     <div class="row">
         <div class="col-lg-3">
             <h3 class="my-4">歡迎光臨</h3>
-            <?php include('./layouts/nav.php'); ?>
         </div>
-        <div class="col-lg-9">
+        <div class="col-lg-12">
             <div class="card mt-4">
                 <div class="card-body">
                     <h1>登入</h1>
