@@ -153,11 +153,13 @@ if($_SESSION['login'] == "OK") {
                         $files = get_files($open_folder);
 
                         echo "路徑：<a href='index.php'>根目錄</a> ";
-
-                        foreach(explode('/',$_GET['folder']) as $v){
-                            if(!empty($v)) $p .= "/{$v}";
-                            echo "<a href='index.php?folder={$p}'>{$v}</a> / ";
-                        }
+                        $pp= explode('/',$_GET['folder']);
+                        if(is_array($pp) && !empty($pp)) {
+                            foreach ( $pp as $v) {
+                                if (!empty($v)) $p .= "/{$v}";
+                                echo "<a href='index.php?folder={$p}'>{$v}</a> / ";
+                            }
+                        };
 
                         echo "
                         <table class=\"table table-light\">
@@ -172,8 +174,8 @@ if($_SESSION['login'] == "OK") {
 
                         foreach($folders as $k=>$v){
                             $path = $open_folder.'/'.$v;
+                            $num = get_num($open_folder.'/'.$v);
                             if($_SESSION['login'] == "OK"){
-                                $num = get_num($open_folder.'/'.$v);
                                 if($num == 0) {
                                     $del = "<a href='index.php?folder={$path}&action=del_folder' id='del_f{$v}' onclick=\"bbconfirm2('del_f{$v}','確定刪除目錄 {$v} ?')\"><i class='fas fa-minus-square text-danger'></i></a>";
                                 }else{
