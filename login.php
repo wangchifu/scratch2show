@@ -33,7 +33,9 @@ if($_REQUEST['send'] == "go"){
         <div class="col-lg-3">
             <h3 class="my-4">歡迎光臨</h3>
         </div>
-        <div class="col-lg-12">
+        <div class="col-lg-4">
+        </div>
+        <div class="col-lg-4">
             <div class="card mt-4">
                 <div class="card-body">
                     <h1>登入</h1>
@@ -69,6 +71,8 @@ if($_REQUEST['send'] == "go"){
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="col-lg-4">
         </div>
     </div>
 </div>
