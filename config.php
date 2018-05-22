@@ -40,6 +40,7 @@ function get_files($folder){
         }
         closedir($handle);
     }
+    sort($files);
     return $files;
 }
 
@@ -54,6 +55,7 @@ function get_folders($folder){
         }
         closedir($handle);
     }
+    sort($folders);
     return $folders;
 }
 
